@@ -2,7 +2,7 @@ import { connect } from "@argent/get-starknet"
 import { useState } from 'react'
 import {useEffect} from 'react';
 import { Routes, Route, useParams, useNavigate } from "react-router-dom";
-import {CallData, cairo, account} from "starknet"
+import {CallData, cairo} from "starknet"
 
 function ButtonConnect({setArgent}){
   const [value, setValue] = useState("Connect");
