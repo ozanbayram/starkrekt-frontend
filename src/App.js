@@ -2,21 +2,37 @@ import { connect } from "@argent/get-starknet"
 import { useState } from 'react'
 import {useEffect} from 'react';
 import { Routes, Route, useParams, useNavigate } from "react-router-dom";
-import {CallData, cairo} from "starknet"
+import {CallData, cairo } from "starknet"
+import { FiSearch } from 'react-icons/fi';
 
-function ButtonConnect({setArgent}){
-  const [value, setValue] = useState("Connect");
+function shortcut(item){
+    const address = item.slice(0,4)+"..."+item.slice(-5)
+    return address
+  }
+
+function ButtonConnect({setArgent, argent}){
+  const navigate = useNavigate();
+  const [value, setValue] = useState("Connect Wallet");
+  try {
+    if (argent.selectedAddress !== value) {
+      setValue((argent.selectedAddress));}}
+  catch{
+    //pass
+  }
+
   async function  handleClick() {
     const stark = await connect()
-    setValue(stark.selectedAddress)
+    setValue((stark.selectedAddress))
     setArgent(stark)
-}     
-
+    if (stark.isConnected===true){
+      navigate(`/${stark.selectedAddress}`);
+    }
+}
 
     return(
-  <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full"
+  <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold h-10 w-36 rounded-full"
          onClick={handleClick}> 
-      {value}
+      {value.length > 14? shortcut(value): value}
 </button>
   );
 }
@@ -24,56 +40,88 @@ function ButtonConnect({setArgent}){
 function MyForm() {
   const navigate = useNavigate();
   const [name, setName] = useState("");
-
   const handleSubmit = (event) => {
     event.preventDefault();
     navigate(`/${name}`);
   }
-    
-
   return (
-    <form onSubmit={handleSubmit}>
-      <label>Enter your name:
-        <input 
-          type="text" 
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
-      </label>
-      <input type="submit" />
-    </form>
+    <form onSubmit={handleSubmit} className="relative flex items-center">
+    <input 
+      type="text" 
+      value={name}
+      className="w-96 px-4 py-1.5 rounded-full border-gray-300 focus:outline-none focus:ring focus:border-sky-300"
+      placeholder="Search wallet address"
+      onChange={(e) => setName(e.target.value)}
+    />
+    <button type="submit" className="ml-2 p-2 rounded-full bg-gray-200 hover:bg-gray-400 transition duration-300">
+      <FiSearch className="text-gray-500" />
+    </button>
+  </form>
   )
 }
 
 
-function ButtonRevoke({argent, contract, spender}){
-    async function handleClick() {
-      console.log(argent)
-      //console.log(address)
-      await argent.account.execute({
-              contractAddress: contract,
-              entrypoint: 'approve',
-              calldata: CallData.compile({
-                spender: spender,
-                amount: cairo.uint256(0)
-        })
-})}
-  return(
-    <div className="py-3">
-      <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full"
+function ButtonRevoke({argent, contract, spender, kind, address}){
+    const hexToDecimal = hex => parseInt(hex, 16);
+    let buttonrevoke;
+    if (argent === null ){
+      buttonrevoke = <div className="py-3">
+      <div className="group relative flex justify-center"> 
+     <button disabled className="cursor-not-allowed rounded-full bg-blue-500 px-4 py-2 text-white font-bold shadow-sm">Revoke</button>
+     <div className="absolute z-10 bottom-10 scale-0 rounded bg-gray-800 p-2 text-s text-white group-hover:scale-100">Please connect wallet first</div>
+   </div>
+     </div>
+    }
+    else{
+      if ( hexToDecimal(address) === hexToDecimal(argent.selectedAddress)) {
+      buttonrevoke = <div className="py-3">
+      < button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full"
       onClick={handleClick}> Revoke</button>
     </div>
+    }
+      else if (hexToDecimal(address) !== hexToDecimal(argent.selectedAddress) ){
+      buttonrevoke = <div className="py-3">
+      <div className="group relative flex justify-center"> 
+     <button disabled className="cursor-not-allowed rounded-full bg-blue-500 px-4 py-2 text-white font-bold shadow-sm">Revoke</button>
+     <div className="absolute z-10 bottom-10 scale-0 rounded bg-gray-800 p-2 text-s text-white group-hover:scale-100">yanlış adres</div>
+   </div>
+     </div>
+    }
+    }
+    
+    async function handleClick() {
+      let tx; 
+      if (kind === "token") {
+        tx = {
+          contractAddress: contract,
+          entrypoint: "approve",
+          calldata: CallData.compile({
+            spender: spender,
+            amount: cairo.uint256(0)})} 
+      } else {
+          tx = {
+          contractAddress: contract,
+          entrypoint: "setApprovalForAll",
+          calldata: CallData.compile({
+            operator: spender,
+            approved: cairo.felt(0),})} 
+      }
+      //console.log(contract)
+      //console.log(tx)
+      //console.log(address)
+      await argent.account.execute(tx)}
+
+  return(<>
+    {buttonrevoke}</>
   );
 }
 
 
-function TableRow({item},{argent}) {
-  console.log("tablooo")
-  console.log(argent)
+function TableRow({item, argent, address}) {
   if (item.allowance>100000000){
     item.allowance="Unlimited"
   }
-  item.contract = item.contract.slice(0,5)+"..."+item.contract.slice(9,12);
+  const contractdisplay = item.contract.slice(0,5)+"..."+item.contract.slice(9,12);
 
   return (
   <tr className="border-t border-zinc-300 dark:border-zinc-500">
@@ -86,16 +134,15 @@ function TableRow({item},{argent}) {
                         {item.name}</a>
             </div>
           <div className="text-xs leading-tight text-zinc-500 dark:text-zinc-400 max-w-[10rem] lg:max-w-[14rem] truncate">
-              {item.contract}
+              {contractdisplay}
           </div>
         </div>
       </div> 
     </td>
-    <td className="overflow-hidden px-2">{item.kind}</td>
-    <td>{item.allowance}</td>
+    <td> {item.kind}</td>
+    <td> {item.allowance}</td>
     <td>{item.spender}</td>
-    <ButtonRevoke argent={argent} contract={item.contract} spender={item.spender}/>
-
+    <td><ButtonRevoke argent={argent} kind={item.kind} contract={item.contract} spender={item.spender} address={address}/></td>
   </tr>
   );
 }
@@ -123,14 +170,10 @@ function TableHeader() {
 }
 
 
-function Table() {
+function Table({setArgent, argent}) {
   const {address} = useParams()
- 
   //console.log(address)
-  const [argent, setArgent] = useState(null);
   const [items, setitems] = useState([]);
-  console.log("istek öncesi")
-  console.log(`https://localhost:5000/approval/allowance?address=${address}`)
   useEffect(()=>{
     fetch(`http://localhost:5000/approval/allowance?address=${address}`,{
       'methods':'GET',
@@ -138,26 +181,23 @@ function Table() {
         'Content-Type':'application/json'
       }
     })
-  
     .then(response => response.json())
     .then(response => setitems(response)).catch(error => console.log(error))
-  console.log("istek atıldı")
   },[address])
 
   const rows = [];
   items.forEach((item) => {
-    if (item.allowance != 0)
-      console.log(argent)
+    if (item.allowance !== 0){
       rows.push(
-        <TableRow item={item} argent={argent} />
-      );
+        <TableRow item={item} argent={argent} address={address}/>
+      );}
     });
   
-  return (
+  return (<div className="bg-gray-100">
 <div className="max-w-7xl w-full mx-auto px-4 lg:px-8 grow mb-8">
   <div className="grid-rows-1 h-24">
     <div className=" grid justify-items-end">
-      <ButtonConnect setArgent={setArgent}/>
+      <ButtonConnect setArgent={setArgent} argent={argent}/>
     </div>  
     <MyForm></MyForm>
   </div>
@@ -174,23 +214,33 @@ function Table() {
     </div>
   </div>
 </div>
+</div>
   );
 }
 
-function Home(){
-return(<>
-  <h1>HELLO</h1>
-  <MyForm/>
-  </>
+
+function Home({setArgent}){
+return(   
+  <div className="flex flex-col items-center justify-start min-h-screen bg-gray-100 pt-44">
+  <div className="flex justify-end absolute top-4 right-4">
+    <ButtonConnect setArgent={setArgent} />
+  </div>
+  <h1 className="text-3xl font-bold mb-6 text-center relative">
+    <span className="absolute -top-8 left-1/2 transform -translate-x-1/2 text-xl font-semibold text-gray-400">
+      STARKREKT
+    </span>
+    Check Your Allowance Don't Be Rekt!
+  </h1>
+  <MyForm />
+</div>
 );
 }
 
 export default function App(){
-  
-
+  const [argent, setArgent] = useState(null);
   return(
     <Routes>
-      <Route path="/" element={<Home/>}/>
-      <Route path="/:address" element={<Table />}/>
+      <Route path="/" element={<Home setArgent={setArgent} />}/>
+      <Route path="/:address" element={<Table setArgent={setArgent} argent={argent} />}/>
     </Routes>
   )}
