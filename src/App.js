@@ -37,7 +37,7 @@ function ButtonConnect({setArgent, argent}){
   );
 }
 
-function MyForm() {
+function SearchBar() {
   const navigate = useNavigate();
   const [name, setName] = useState("");
   const handleSubmit = (event) => {
@@ -121,7 +121,6 @@ function TableRow({item, argent, address}) {
   if (item.allowance>100000000){
     item.allowance="Unlimited"
   }
-  const contractdisplay = item.contract.slice(0,5)+"..."+item.contract.slice(9,12);
 
   return (
   <tr className="border-t border-zinc-300 dark:border-zinc-500">
@@ -134,7 +133,7 @@ function TableRow({item, argent, address}) {
                         {item.name}</a>
             </div>
           <div className="text-xs leading-tight text-zinc-500 dark:text-zinc-400 max-w-[10rem] lg:max-w-[14rem] truncate">
-              {contractdisplay}
+              {shortcut(item.contract)}
           </div>
         </div>
       </div> 
@@ -175,7 +174,7 @@ function Table({setArgent, argent}) {
   //console.log(address)
   const [items, setitems] = useState([]);
   useEffect(()=>{
-    fetch(`http://localhost:5000/approval/allowance?address=${address}`,{
+    fetch(`https://api.starkrekt.com/approval/allowance?address=${address}`,{
       'methods':'GET',
       headers : {
         'Content-Type':'application/json'
@@ -199,7 +198,7 @@ function Table({setArgent, argent}) {
     <div className=" grid justify-items-end">
       <ButtonConnect setArgent={setArgent} argent={argent}/>
     </div>  
-    <MyForm></MyForm>
+    <SearchBar/>
   </div>
   <div className="grid-rows-1">
     <div className="max-w-7xl	border border-black dark:border-white rounded-lg overflow-x-scroll whitespace-nowrap scrollbar-hide">
@@ -231,7 +230,7 @@ return(
     </span>
     Check Your Allowance Don't Be Rekt!
   </h1>
-  <MyForm />
+  <SearchBar/>
 </div>
 );
 }
