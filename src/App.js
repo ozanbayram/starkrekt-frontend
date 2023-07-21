@@ -199,12 +199,14 @@ function Table({setArgent, argent}) {
   
   return (<div className="bg-gray-100">
 <div className="max-w-7xl w-full mx-auto px-4 lg:px-8 grow mb-8">
-  <div className="grid-rows-1 h-24">
-    <div className=" grid justify-items-end">
-      <ButtonConnect setArgent={setArgent} argent={argent}/>
-    </div>  
-    <SearchBar/>
-  </div>
+<div className="flex justify-between items-center h-24">
+        <div>
+          <SearchBar />
+        </div>
+        <div>
+          <ButtonConnect setArgent={setArgent} argent={argent} />
+        </div>
+      </div>
   <div className="grid-rows-1">
     <div className="max-w-7xl	border border-black dark:border-white rounded-lg overflow-x-scroll whitespace-nowrap scrollbar-hide">
       <table className="w-full border-collapse allowances-table">
