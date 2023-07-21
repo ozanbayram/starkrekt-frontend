@@ -139,7 +139,7 @@ function TableRow({item, argent, address}) {
         </div>
       </div> 
     </td>
-    <td> {item.kind}</td>
+    <td> {item.kind === "nft" ? "NFT" : "Token" }</td>
     <td> {item.allowance}</td>
     <td>{item.spender}</td>
     <td><ButtonRevoke argent={argent} kind={item.kind} contract={item.contract} spender={item.spender} address={address}/></td>
