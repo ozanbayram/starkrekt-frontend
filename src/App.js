@@ -4,6 +4,7 @@ import {useEffect} from 'react';
 import { Routes, Route, useParams, useNavigate } from "react-router-dom";
 import {CallData, cairo } from "starknet"
 import { FiSearch } from 'react-icons/fi';
+import { PulseLoader} from 'react-spinners'
 
 function shortcut(item){
     const address = item.slice(0,4)+"..."+item.slice(-5)
@@ -171,17 +172,21 @@ function TableHeader() {
 
 function Table({setArgent, argent}) {
   const {address} = useParams()
+  const [loading, setLoading] = useState(true);
   //console.log(address)
   const [items, setitems] = useState([]);
   useEffect(()=>{
-    fetch(`https://api.starkrekt.com/approval/allowance?address=${address}`,{
+    fetch(`https://starkrekt.com/approval/allowance?address=${address}`,{
       'methods':'GET',
       headers : {
         'Content-Type':'application/json'
       }
     })
     .then(response => response.json())
-    .then(response => setitems(response)).catch(error => console.log(error))
+    .then(response => setitems(response)).catch(error => console.log(error)).finally(() => {
+      setLoading(false);
+  });
+
   },[address])
 
   const rows = [];
@@ -210,6 +215,9 @@ function Table({setArgent, argent}) {
           {rows}
         </tbody>
       </table>
+      <div className="flex items-center justify-center min-h-200 py-10">
+            {loading ? <PulseLoader color="#bdbebd" size={30} /> : null}
+          </div>
     </div>
   </div>
 </div>
