@@ -176,7 +176,7 @@ function Table({setArgent, argent}) {
   //console.log(address)
   const [items, setitems] = useState([]);
   useEffect(()=>{
-    fetch(`https://starkrekt.com/approval/allowance?address=${address}`,{
+    fetch(`https://api.starkrekt.com/approval/allowance?address=${address}`,{
       'methods':'GET',
       headers : {
         'Content-Type':'application/json'
