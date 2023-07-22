@@ -5,6 +5,9 @@ import { Routes, Route, useParams, useNavigate } from "react-router-dom";
 import {CallData, cairo } from "starknet"
 import { FiSearch } from 'react-icons/fi';
 import { PulseLoader} from 'react-spinners'
+import { inject } from '@vercel/analytics';
+
+inject();
 
 function shortcut(item){
     const address = item.slice(0,4)+"..."+item.slice(-5)
@@ -75,6 +78,8 @@ function ButtonRevoke({argent, contract, spender, kind, address}){
     }
     else{
       if ( hexToDecimal(address) === hexToDecimal(argent.selectedAddress)) {
+      //console.log(hexToDecimal(address))
+      //console.log(hexToDecimal(argent.selectedAddress))
       buttonrevoke = <div className="py-3">
       < button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full"
       onClick={handleClick}> Revoke</button>
@@ -84,7 +89,7 @@ function ButtonRevoke({argent, contract, spender, kind, address}){
       buttonrevoke = <div className="py-3">
       <div className="group relative flex justify-center"> 
      <button disabled className="cursor-not-allowed rounded-full bg-blue-500 px-4 py-2 text-white font-bold shadow-sm">Revoke</button>
-     <div className="absolute z-10 bottom-10 scale-0 rounded bg-gray-800 p-2 text-s text-white group-hover:scale-100">yanlış adres</div>
+     <div className="absolute z-10 bottom-10 scale-0 rounded bg-gray-800 p-2 text-s text-white group-hover:scale-100">Not your address</div>
    </div>
      </div>
     }
