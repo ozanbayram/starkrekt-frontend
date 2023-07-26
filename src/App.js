@@ -33,7 +33,7 @@ function ButtonConnect({setArgent, argent, isWalletConnected, setIsWalletConnect
     setIsHovering(false);
   };
 
-  async function DiscWallet(){
+  async function DisconnectWallet(){
     await disconnect({clearLastWallet:true})
     setIsWalletConnected(false)
     setValue("Connect Wallet")
@@ -42,7 +42,7 @@ function ButtonConnect({setArgent, argent, isWalletConnected, setIsWalletConnect
     //console.log(value)
   }
 
-  async function  handleClick() {
+  async function  ConnectWallet() {
     const stark = await connect()
     if (stark.isConnected===true){
       setValue((stark.selectedAddress))
@@ -57,7 +57,7 @@ function ButtonConnect({setArgent, argent, isWalletConnected, setIsWalletConnect
     return( isWalletConnected ?
       
   <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-6 inline-flex items-center rounded-full"
-         onClick={DiscWallet} 
+         onClick={DisconnectWallet} 
          onMouseOver={handleMouseOver}
          onMouseOut={handleMouseOut}>
       <span class="mr-2">{isHovering ? "Disconnect" : (value.length > 14? shortcut(value): value)}</span>
@@ -66,8 +66,8 @@ function ButtonConnect({setArgent, argent, isWalletConnected, setIsWalletConnect
 </svg>
 </button>
 
-  :  <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold h-10 w-36 rounded-full"
-  onClick={handleClick}> 
+  :  <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold h-10 w-40 rounded-full"
+  onClick={ConnectWallet}> 
 {value.length > 14? shortcut(value): value}
 </button>);
 }
