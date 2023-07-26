@@ -1,4 +1,4 @@
-import { connect } from "@argent/get-starknet"
+import { connect, disconnect } from "get-starknet"
 import { useState } from 'react'
 import {useEffect} from 'react';
 import { Routes, Route, useParams, useNavigate } from "react-router-dom";
@@ -14,9 +14,11 @@ function shortcut(item){
     return address
   }
 
-function ButtonConnect({setArgent, argent}){
+function ButtonConnect({setArgent, argent, isWalletConnected, setIsWalletConnected}){
   const navigate = useNavigate();
   const [value, setValue] = useState("Connect Wallet");
+  const [isHovering, setIsHovering] = useState(false);
+  
   try {
     if (argent.selectedAddress !== value) {
       setValue((argent.selectedAddress));}}
@@ -24,21 +26,50 @@ function ButtonConnect({setArgent, argent}){
     //pass
   }
 
+  const handleMouseOver = () => {
+    setIsHovering(true);
+  };
+  const handleMouseOut = () => {
+    setIsHovering(false);
+  };
+
+  async function DiscWallet(){
+    await disconnect({clearLastWallet:true})
+    setIsWalletConnected(false)
+    setValue("Connect Wallet")
+    setArgent(null)
+    //console.log(argent.selectedAddress)
+    //console.log(value)
+  }
+
   async function  handleClick() {
     const stark = await connect()
-    setValue((stark.selectedAddress))
-    setArgent(stark)
     if (stark.isConnected===true){
+      setValue((stark.selectedAddress))
+      setArgent(stark)
+      setIsWalletConnected(true)
+      setIsHovering(false)
       navigate(`/${stark.selectedAddress}`);
     }
 }
 
-    return(
-  <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold h-10 w-36 rounded-full"
-         onClick={handleClick}> 
-      {value.length > 14? shortcut(value): value}
+
+    return( isWalletConnected ?
+      
+  <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-6 inline-flex items-center rounded-full"
+         onClick={DiscWallet} 
+         onMouseOver={handleMouseOver}
+         onMouseOut={handleMouseOut}>
+      <span class="mr-2">{isHovering ? "Disconnect" : (value.length > 14? shortcut(value): value)}</span>
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75" />
+</svg>
 </button>
-  );
+
+  :  <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold h-10 w-36 rounded-full"
+  onClick={handleClick}> 
+{value.length > 14? shortcut(value): value}
+</button>);
 }
 
 function SearchBar() {
@@ -175,10 +206,10 @@ function TableHeader() {
 }
 
 
-function Table({setArgent, argent}) {
+function Table({setArgent, argent, isWalletConnected, setIsWalletConnected}) {
   const {address} = useParams()
   const [loading, setLoading] = useState(true);
-  //console.log(address)
+  //console.log(loading)
   const [items, setitems] = useState([]);
   useEffect(()=>{
     fetch(`https://api.starkrekt.com/approval/allowance?address=${address}`,{
@@ -189,7 +220,7 @@ function Table({setArgent, argent}) {
     })
     .then(response => response.json())
     .then(response => setitems(response)).catch(error => console.log(error)).finally(() => {
-      setLoading(false);
+    setLoading(false);
   });
 
   },[address])
@@ -209,7 +240,7 @@ function Table({setArgent, argent}) {
           <SearchBar />
         </div>
         <div>
-          <ButtonConnect setArgent={setArgent} argent={argent} />
+          <ButtonConnect setArgent={setArgent} argent={argent} isWalletConnected={isWalletConnected} setIsWalletConnected={setIsWalletConnected}/>
         </div>
       </div>
   <div className="grid-rows-1">
@@ -233,11 +264,11 @@ function Table({setArgent, argent}) {
 }
 
 
-function Home({setArgent}){
+function Home({setArgent, argent, isWalletConnected, setIsWalletConnected}){
 return(   
   <div className="flex flex-col items-center justify-start min-h-screen bg-gray-100 pt-44">
   <div className="flex justify-end absolute top-4 right-4">
-    <ButtonConnect setArgent={setArgent} />
+    <ButtonConnect setArgent={setArgent} argent={argent} isWalletConnected={isWalletConnected} setIsWalletConnected={setIsWalletConnected}/>
   </div>
   <h1 className="text-3xl font-bold mb-6 text-center relative">
     <span className="absolute -top-8 left-1/2 transform -translate-x-1/2 text-xl font-semibold text-gray-400">
@@ -252,9 +283,10 @@ return(
 
 export default function App(){
   const [argent, setArgent] = useState(null);
+  const [isWalletConnected, setIsWalletConnected] = useState(false);
   return(
     <Routes>
-      <Route path="/" element={<Home setArgent={setArgent} />}/>
-      <Route path="/:address" element={<Table setArgent={setArgent} argent={argent} />}/>
+      <Route path="/" element={<Home setArgent={setArgent} argent={argent} isWalletConnected={isWalletConnected} setIsWalletConnected={setIsWalletConnected}/>}/>
+      <Route path="/:address" element={<Table setArgent={setArgent} argent={argent} isWalletConnected={isWalletConnected} setIsWalletConnected={setIsWalletConnected} />}/>
     </Routes>
   )}
