@@ -212,6 +212,7 @@ function Table({setArgent, argent, isWalletConnected, setIsWalletConnected}) {
   //console.log(loading)
   const [items, setitems] = useState([]);
   useEffect(()=>{
+    setLoading(true)
     fetch(`https://api.starkrekt.com/approval/allowance?address=${address}`,{
       'methods':'GET',
       headers : {
@@ -250,7 +251,7 @@ function Table({setArgent, argent, isWalletConnected, setIsWalletConnected}) {
           <TableHeader/>
         </thead>
         <tbody>
-          {rows}
+          {loading ? null : rows}
         </tbody>
       </table>
       <div className="flex items-center justify-center min-h-200 py-10">
