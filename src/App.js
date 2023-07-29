@@ -6,6 +6,11 @@ import {CallData, cairo } from "starknet"
 import { FiSearch } from 'react-icons/fi';
 import { PulseLoader} from 'react-spinners'
 import { inject } from '@vercel/analytics';
+import spenderlist from "./spender.json"
+import {CopyToClipboard} from 'react-copy-to-clipboard';
+import Tippy from "@tippyjs/react";
+import 'tippy.js/dist/tippy.css';
+import 'tippy.js/animations/shift-away.css';
 
 inject();
 
@@ -100,29 +105,36 @@ function ButtonRevoke({argent, contract, spender, kind, address}){
     const hexToDecimal = hex => parseInt(hex, 16);
     let buttonrevoke;
     if (argent === null ){
-      buttonrevoke = <div className="py-3">
-      <div className="group relative flex justify-center"> 
-     <button disabled className="cursor-not-allowed rounded-full bg-blue-500 px-4 py-2 text-white font-bold shadow-sm">Revoke</button>
-     <div className="absolute z-10 bottom-10 scale-0 rounded bg-gray-800 p-2 text-s text-white group-hover:scale-100">Please connect wallet first</div>
-   </div>
-     </div>
+
+      buttonrevoke =  
+        <div className="py-3 flex justify-end px-2">
+          <Tippy content="Please connect wallet">
+          <div>
+      < button disabled className="cursor-not-allowed bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full"
+      onClick={handleClick}> Revoke</button>
+      </div> 
+      </Tippy>
+    </div>
+   
     }
     else{
       if ( hexToDecimal(address) === hexToDecimal(argent.selectedAddress)) {
       //console.log(hexToDecimal(address))
       //console.log(hexToDecimal(argent.selectedAddress))
-      buttonrevoke = <div className="py-3">
+      buttonrevoke = <div className="py-3 flex justify-end px-2">
       < button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full"
       onClick={handleClick}> Revoke</button>
     </div>
     }
       else if (hexToDecimal(address) !== hexToDecimal(argent.selectedAddress) ){
-      buttonrevoke = <div className="py-3">
-      <div className="group relative flex justify-center"> 
-     <button disabled className="cursor-not-allowed rounded-full bg-blue-500 px-4 py-2 text-white font-bold shadow-sm">Revoke</button>
-     <div className="absolute z-10 bottom-10 scale-0 rounded bg-gray-800 p-2 text-s text-white group-hover:scale-100">Not your address</div>
-   </div>
-     </div>
+      buttonrevoke =<div className="py-3 flex justify-end px-2">
+      <Tippy content="It is not connected wallet">
+      <div>
+  < button disabled className="cursor-not-allowed bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full"
+  onClick={handleClick}> Revoke</button>
+  </div> 
+  </Tippy>
+</div>
     }
     }
     
@@ -155,6 +167,10 @@ function ButtonRevoke({argent, contract, spender, kind, address}){
 
 
 function TableRow({item, argent, address}) {
+  const [visible, setVisible] = useState(false);
+  const show = () => setVisible(true);
+  const hide = () => setVisible(false);
+
   if (item.allowance>100000000){
     item.allowance="Unlimited"
   }
@@ -162,11 +178,11 @@ function TableRow({item, argent, address}) {
   return (
   <tr className="border-t border-zinc-300 dark:border-zinc-500">
     <td className="overflow-hidden px-2">
-      <div className="flex items-center gap-1 py-1 w-40 lg:w-56">
+      <div className="flex items-center gap-1 py-1 w-40">
         <div className="flex flex-col items-start gap-0.5">
           <div className="flex items-center gap-2 text-base leading-tight">
             <div className="relative shrink-0"></div>
-            <a className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-current focus-visible:rounded text-current visited:text-current no-underline hover:underline max-w-[8rem] lg:max-w-[12rem] truncateerilen">
+            <a target="_blank" rel="noopener noreferrer" href={`https://voyager.online/contract/${item.contract}`} className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-current focus-visible:rounded text-current visited:text-current no-underline hover:underline max-w-[8rem] lg:max-w-[12rem] truncateerilen">
                         {item.name}</a>
             </div>
           <div className="text-xs leading-tight text-zinc-500 dark:text-zinc-400 max-w-[10rem] lg:max-w-[14rem] truncate">
@@ -175,9 +191,29 @@ function TableRow({item, argent, address}) {
         </div>
       </div> 
     </td>
-    <td> {item.kind === "nft" ? "NFT" : "Token" }</td>
+    <td>  {item.kind === "nft" ? "NFT" : "Token" }</td>
     <td> {item.allowance}</td>
-    <td>{item.spender}</td>
+    <td class="flex items-center py-2">
+  <div class="flex flex-col">
+    <div class="mb-1">
+      <a target="_blank" rel="noopener noreferrer" className="no-underline hover:underline" href={`https://voyager.online/contract/${item.spender}`}>
+    {spenderlist[item.spender]}
+    </a>
+    </div>
+    <div class="text-sm text-gray-500">
+      {shortcut(item.spender)}
+    </div>
+  </div>
+  <CopyToClipboard text={item.spender}>
+    <Tippy content="Copied"  visible={visible}  animation='shift-away'>
+  <button onClick={show} onMouseLeave={hide} class="ml-3">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-5 h-5 inline-block">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M15.666 3.888A2.25 2.25 0 0013.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 01-.75.75H9a.75.75 0 01-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 01-2.25 2.25H6.75A2.25 2.25 0 014.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 011.927-.184" />
+    </svg>
+  </button>
+  </Tippy>
+  </CopyToClipboard>
+</td>
     <td><ButtonRevoke argent={argent} kind={item.kind} contract={item.contract} spender={item.spender} address={address}/></td>
   </tr>
   );
@@ -198,8 +234,8 @@ function TableHeader() {
       <th className='text-left px-2 whitespace-nowrap'>
         <div className='font-bold text-left'> Spender </div>
       </th>
-      <th className='text-left px-2 whitespace-nowrap'>
-        <div className='font-bold text-left'> Revoke </div>
+      <th className='text-left px-6 whitespace-nowrap'>
+        <div className='font-bold text-right'> Revoke </div>
       </th>
     </tr>
   );
