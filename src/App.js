@@ -1,7 +1,7 @@
 import { connect, disconnect } from "get-starknet"
 import { useState } from 'react'
 import {useEffect} from 'react';
-import { Routes, Route, useParams, useNavigate } from "react-router-dom";
+import { Routes, Route, useParams, useNavigate, useLocation } from "react-router-dom";
 import {CallData, cairo } from "starknet"
 import { FiSearch } from 'react-icons/fi';
 import { PulseLoader} from 'react-spinners'
@@ -12,7 +12,17 @@ import Tippy from "@tippyjs/react";
 import 'tippy.js/dist/tippy.css';
 import 'tippy.js/animations/shift-away.css';
 
-inject();
+export const usePageTracking = () => {
+  const location = useLocation();
+
+  useEffect(() => {
+    window.gtag("event", "page_view", {
+      page_path: location.pathname + location.search + location.hash,
+      page_search: location.search,
+      page_hash: location.hash,
+    });
+  }, [location]);
+};
 
 function shortcut(item){
     const address = item.slice(0,4)+"..."+item.slice(-5)
