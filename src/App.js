@@ -11,10 +11,11 @@ import {CopyToClipboard} from 'react-copy-to-clipboard';
 import Tippy from "@tippyjs/react";
 import 'tippy.js/dist/tippy.css';
 import 'tippy.js/animations/shift-away.css';
+inject();
+
 
 export const usePageTracking = () => {
   const location = useLocation();
-
   useEffect(() => {
     window.gtag("event", "page_view", {
       page_path: location.pathname + location.search + location.hash,
