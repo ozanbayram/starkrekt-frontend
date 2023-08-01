@@ -321,12 +321,15 @@ return(
   <div className="flex justify-end absolute top-4 right-4">
     <ButtonConnect setArgent={setArgent} argent={argent} isWalletConnected={isWalletConnected} setIsWalletConnected={setIsWalletConnected}/>
   </div>
-  <h1 className="text-3xl font-bold mb-6 text-center relative">
+  <h1 className="text-3xl font-bold mb-2 text-center relative">
     <span className="absolute -top-8 left-1/2 transform -translate-x-1/2 text-xl font-semibold text-gray-400">
       STARKREKT
     </span>
     Check Your Allowance Don't Be Rekt!
   </h1>
+  <p className="text-center text-gray-800 mb-6">
+      The dapp enables users to check and reset their token spending permissions on StarkNet.
+    </p>
   <SearchBar/>
 </div>
 );
