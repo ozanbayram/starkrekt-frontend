@@ -12,6 +12,8 @@
 "0x51734077ba7baf5765896c56ce10b389d80cdcee8622e23c0556fb49e82df1b" : "Unframed: NFT Marketplace",
 "0x79b882cb8200c1c1d20e849a2ef19124b0b8985358c1313ea6af588cfe4fec8" : "Mint Square: NFT Marketplace",
 "0x713273b1982c3b870b963418843ff8cbdb8f92481cd7f663f0f0e1c94848833" : "Mint Square: Deprecated - NFT Marketplace",
-"0x4c0a5193d58f74fbace4b74dcf65481e734ed1714121bdc571da345540efa05" : "zkLend: Market"
-
+"0x4c0a5193d58f74fbace4b74dcf65481e734ed1714121bdc571da345540efa05" : "zkLend: Market",
+"0x6ac597f8116f886fa1c97a23fa4e08299975ecaf6b598873ca6792b9bbfb678" : "Starknet.id",
+"0x4525855935a035e454ece53938b73861265de5edaa466905c0ecf5ebd41ce10" : "Fibrous - Deprecated",
+"0x76dbabc4293db346b0a56b29b6ea9fe18e93742c73f12348c8747ecfc1050aa" : "Carmine Options: AMM"
 }
