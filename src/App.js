@@ -3,7 +3,8 @@ import { useState } from 'react'
 import {useEffect} from 'react';
 import { Routes, Route, useParams, useNavigate, useLocation } from "react-router-dom";
 import {CallData, cairo } from "starknet"
-import { FiSearch } from 'react-icons/fi';
+import { FiSearch} from 'react-icons/fi';
+import { FaTwitter } from 'react-icons/fa';
 import { PulseLoader} from 'react-spinners'
 import { inject } from '@vercel/analytics';
 import spenderlist from "./spender.json"
@@ -315,24 +316,49 @@ function Table({setArgent, argent, isWalletConnected, setIsWalletConnected}) {
 }
 
 
-function Home({setArgent, argent, isWalletConnected, setIsWalletConnected}){
-return(   
-  <div className="flex flex-col items-center justify-start min-h-screen bg-gray-100 pt-44">
-  <div className="flex justify-end absolute top-4 right-4">
-    <ButtonConnect setArgent={setArgent} argent={argent} isWalletConnected={isWalletConnected} setIsWalletConnected={setIsWalletConnected}/>
-  </div>
-  <h1 className="text-3xl font-bold mb-2 text-center relative">
-    <span className="absolute -top-8 left-1/2 transform -translate-x-1/2 text-xl font-semibold text-gray-400">
-      STARKREKT
-    </span>
-    Check Your Allowance Don't Be Rekt!
-  </h1>
-  <p className="text-center text-gray-800 mb-6">
-      The dapp enables users to check and reset their token spending permissions on StarkNet.
-    </p>
-  <SearchBar/>
-</div>
-);
+function Home({
+  setArgent,
+  argent,
+  isWalletConnected,
+  setIsWalletConnected
+}) {
+  return (
+    <div className="flex flex-col items-center justify-start min-h-screen bg-gray-100 pt-24 relative">
+      {/* Top bar with ButtonConnect component */}
+      <div className="absolute top-4 left-4 right-4 flex justify-end">
+        <ButtonConnect
+          setArgent={setArgent}
+          argent={argent}
+          isWalletConnected={isWalletConnected}
+          setIsWalletConnected={setIsWalletConnected}
+        />
+      </div>
+
+      {/* Main Content */}
+      <img src="/starkrektbanner.png" alt="StarkRekt" className="mb-2 w-1/5" />
+      <h1 className="text-3xl font-bold mb-2 text-center">
+        Check Your Allowance Don't Be Rekt!
+      </h1>
+      <p className="text-center text-gray-800 mb-6">
+        The dapp enables users to check and reset their token spending permissions on StarkNet.
+      </p>
+      <SearchBar />
+
+      {/* Twitter Icon at bottom left */}
+      <div className="absolute bottom-4 left-4">
+        <a href="https://twitter.com/StarkRekt" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-gray-800">
+          <FaTwitter size={28} />
+        </a>
+      </div>
+
+      {/* Footer */}
+      <div className="mt-auto w-full text-center text-base text-gray-600 p-4">
+        <a href="https://fibrous.finance" className="hover:underline" target="_blank" rel="noopener noreferrer">
+          Powered by Fibrous Finance
+        </a>
+      </div>
+    </div>
+  );
 }
 
 export default function App(){
