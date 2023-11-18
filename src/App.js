@@ -73,7 +73,7 @@ function ButtonConnect({setArgent, argent, isWalletConnected, setIsWalletConnect
 
     return( isWalletConnected ?
       
-  <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-6 inline-flex items-center rounded-full"
+  <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold ml-2 py-2 px-6 inline-flex items-center rounded-full"
          onClick={DisconnectWallet} 
          onMouseOver={handleMouseOver}
          onMouseOut={handleMouseOut}>
