@@ -83,7 +83,7 @@ function ButtonConnect({setArgent, argent, isWalletConnected, setIsWalletConnect
 </svg>
 </button>
 
-  :  <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold h-10 w-40 rounded-full"
+  :  <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold h-10 w-40 ml-2 rounded-full"
   onClick={ConnectWallet}> 
 {value.length > 14? shortcut(value): value}
 </button>);
@@ -101,7 +101,7 @@ function SearchBar() {
     <input 
       type="text" 
       value={name}
-      className="w-96 px-4 py-1.5 rounded-full border-gray-300 focus:outline-none focus:ring focus:border-sky-300"
+      className="w-full sm:w-96 px-4 py-1.5 rounded-full border-gray-300 focus:outline-none focus:ring focus:border-sky-300"
       placeholder="Search wallet address"
       onChange={(e) => setName(e.target.value)}
     />
@@ -285,7 +285,7 @@ function Table({setArgent, argent, isWalletConnected, setIsWalletConnected}) {
       );}
     });
   
-  return (<div className="bg-gray-100">
+  return (<div className="bg-gray-100 min-h-screen">
 <div className="max-w-7xl w-full mx-auto px-4 lg:px-8 grow mb-8">
 <div className="flex justify-between items-center h-24">
         <div>
@@ -296,7 +296,7 @@ function Table({setArgent, argent, isWalletConnected, setIsWalletConnected}) {
         </div>
       </div>
   <div className="grid-rows-1">
-    <div className="max-w-7xl	border border-black dark:border-white rounded-lg overflow-x-scroll whitespace-nowrap scrollbar-hide">
+    <div className="max-w-7xl	border border-black dark:border-white rounded-lg overflow-auto whitespace-nowrap scrollbar-hide">
       <table className="w-full border-collapse allowances-table">
         <thead>
           <TableHeader/>
