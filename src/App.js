@@ -305,7 +305,7 @@ function Table({setArgent, argent, isWalletConnected, setIsWalletConnected}) {
           {loading ? null : rows}
         </tbody>
       </table>
-      <div className="flex items-center justify-center min-h-200 py-10">
+      <div className="flex items-center justify-center min-h-200">
             {loading ? <PulseLoader color="#bdbebd" size={30} /> : null}
           </div>
     </div>
