@@ -183,8 +183,12 @@ function TableRow({item, argent, address}) {
   const show = () => setVisible(true);
   const hide = () => setVisible(false);
 
-  if (item.allowance>100000000){
-    item.allowance="Unlimited"
+  if (item.type === "token") {
+    item.allowance = item.allowance / 1000000000; // Convert from Wei to Gwei
+  }
+  
+  if (item.allowance > 100000000) {
+    item.allowance = "Unlimited";
   }
 
   return (
