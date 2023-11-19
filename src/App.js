@@ -183,7 +183,7 @@ function TableRow({item, argent, address}) {
   const show = () => setVisible(true);
   const hide = () => setVisible(false);
 
-  if (item.type === "token") {
+  if (item.kind === "token") {
     item.allowance = item.allowance / 1000000000; // Convert from Wei to Gwei
   }
   
