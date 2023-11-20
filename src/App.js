@@ -184,7 +184,7 @@ function TableRow({item, argent, address}) {
   const hide = () => setVisible(false);
 
   if (item.kind === "token") {
-    item.allowance = item.allowance / 10*item.contract_decimals; 
+    item.allowance = item.allowance / 10**item.contract_decimals; 
   }
   
   if (item.allowance > 100000000) {
