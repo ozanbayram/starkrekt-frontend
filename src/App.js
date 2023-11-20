@@ -186,12 +186,12 @@ function TableRow({item, argent, address}) {
   function formatDisplayAllowance(value) {
     if (value > 100000000) {
       return "Unlimited";
-    } else if (value < 0.0001) {
-     
-      return value.toExponential(3);
+    } else if (value < 0.001) {
+      const magnitude = Math.floor(Math.log10(Math.abs(value))) + 1;
+      const scale = Math.pow(10, 3 - magnitude);
+      return (Math.round(value * scale) / scale).toFixed(Math.abs(magnitude - 3));
     } else {
-      
-      return value.toFixed(5);
+      return value.toString();
     }
   }
   
