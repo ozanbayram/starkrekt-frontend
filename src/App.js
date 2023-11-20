@@ -183,12 +183,13 @@ function TableRow({item, argent, address}) {
   const show = () => setVisible(true);
   const hide = () => setVisible(false);
 
+  let displayAllowance = item.allowance;
   if (item.kind === "token") {
-    item.allowance = item.allowance / 10**item.contract_decimals; 
+    displayAllowance /= 10 ** item.contract_decimals;
   }
   
-  if (item.allowance > 100000000) {
-    item.allowance = "Unlimited";
+  if (displayAllowance > 100000000) {
+    displayAllowance = "Unlimited";
   }
 
   return (
@@ -208,7 +209,7 @@ function TableRow({item, argent, address}) {
       </div> 
     </td>
     <td>  {item.kind === "nft" ? "NFT" : "Token" }</td>
-    <td> {item.allowance}</td>
+    <td> {displayAllowance}</td>
     <td class="flex items-center py-2">
   <div class="flex flex-col">
     <div class="mb-1">
