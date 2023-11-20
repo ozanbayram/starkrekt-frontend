@@ -183,14 +183,24 @@ function TableRow({item, argent, address}) {
   const show = () => setVisible(true);
   const hide = () => setVisible(false);
 
+  function formatDisplayAllowance(value) {
+    if (value > 100000000) {
+      return "Unlimited";
+    } else if (value < 0.0001) {
+     
+      return value.toExponential(3);
+    } else {
+      
+      return value.toFixed(5);
+    }
+  }
+  
   let displayAllowance = item.allowance;
   if (item.kind === "token") {
     displayAllowance /= 10 ** item.contract_decimals;
   }
   
-  if (displayAllowance > 100000000) {
-    displayAllowance = "Unlimited";
-  }
+  displayAllowance = formatDisplayAllowance(displayAllowance);
 
   return (
   <tr className="border-t border-zinc-300 dark:border-zinc-500">
